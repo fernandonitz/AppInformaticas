@@ -1,0 +1,73 @@
+<HTML>
+	<HEAD>
+		<TITLE>
+			TransitAR
+		</TITLE>
+		<SCRIPT LANGUAGE="JavaScript">
+		<!--
+			var scrn = new Array(220)                      //screen fill flag
+			var icons = new Array(8)                           //block image
+			icons[0]=new Image();icons[0].src="bl0.gif"
+			icons[1]=new Image();icons[0].src="bl1.gif"
+			var styl = new Array(280)                       //block style
+			var tmps = new Array(10)                        //temp array
+			systm=""
+			ver=navigator.appVersion
+			Nv=ver.charAt(0)
+			len=ver.length
+			for(iln=0;iln<len;iln++) 
+				if(ver.charAt(iln)=="(") break
+			systm = ver.charAt(iln+1).toUpperCase()
+		//-->
+		</SCRIPT>
+	</HEAD>
+	<BODY BGCOLOR="#CCCCFF" TEXT="#000000" VLINK="#FF0000" ONLOAD="focus()">
+		<SCRIPT LANGUAGE="JavaScript">
+		<!--
+			//screen flag init
+			for (ia=0; ia<220; ia++){
+			scrn[ia]=0
+			}
+			//screen init
+			for (ia=0; ia<22; ia++){
+			document.write("<CENTER><IMG BORDER=0 WIDTH=900 HEIGHT=13 SRC='bl0.gif'></CENTER>")
+			}
+			//style data
+			tmps[1]="22233233--22233233--22233233--22233233--"
+			tmps[2]="12212223--12212232--21222332--12222332--"
+			tmps[3]="13222332--21223233--13222332--21223233--"
+			tmps[4]="12222333--22233132--12222333--22233132--"
+			tmps[5]="12223233--23313233--22233343--22232432--"
+			tmps[6]="13233233--21222333--22233242--22323334--"
+			tmps[7]="13233343--21222324--13233343--21222324--"
+
+			//read style data
+			for (ib=1; ib<8; ib++){
+			for (ia=0; ia<40; ia++){
+			 ic = tmps[ib].charAt(ia)
+			 iz = ib * 40 + ia - 40
+			 styl[iz] = 4
+			   if (ic == "1"){styl[iz] = 1}
+			   if (ic == "2"){styl[iz] = 2}
+			   if (ic == "3"){styl[iz] = 3}
+			   if (ic == "4"){styl[iz] = 4}
+			}
+			}
+			 systm=""
+			 ver=navigator.appVersion
+			 Nv=ver.charAt(0)
+			 len=ver.length
+			 for(iln=0;iln<len;iln++) if(ver.charAt(iln)=="(") break
+			 systm = ver.charAt(iln+1).toUpperCase()
+
+			 if (systm != "C"){if (Nv >= 4){
+			  document.write("<LAYER LEFT='96' TOP='16'><PRE><FONT SIZE='+1'>Full <B><FONT COLOR='#3F3FFF'>KEYBOAD</FONT></B> operation</FONT><BR>     <FONT SIZE='-1'>For Netscape 4.0</PRE></LAYER><PRE><CENTER><FONT SIZE='-1'>LEFT/RIGHT..4,6  ROTATE..5  DOWN..2</CENTER><CENTER><FORM NAME='TetriScript'><HR><INPUT TYPE='text' NAME='LINE' SIZE=15 VALUE ='SELECT LEVEL'>  START/RESET .. HIT S KEY  <INPUT TYPE='text' NAME='PTS' SIZE=15 VALUE ='LEVEL L KEY!'></FORM></CENTER></PRE>")
+			 }else{
+			  document.write('<FORM NAME="TetriScript"><HR><CENTER><INPUT TYPE="button" VALUE=" LEFT  " ONCLICK="LeftClick()"><INPUT TYPE="button" VALUE=" ROTATE " ONCLICK="RotateClick()"><INPUT TYPE="button" VALUE=" RIGHT " ONCLICK="RightClick()"></CENTER><CENTER><INPUT TYPE="button" VALUE="  DOWN  " ONCLICK="DownCheck()"></CENTER><PRE><CENTER><INPUT TYPE="text" NAME="LINE" SIZE=15 VALUE ="SELECT LEVEL">     <INPUT TYPE="button" VALUE="START / RESET" ONCLICK="start()">     <INPUT TYPE="text" NAME="PTS" SIZE=15 VALUE ="CLICK ROTATE "></CENTER></PRE></FORM>')
+			}}else{
+			  document.write("<DIV STYLE='position:absolute; left:96; top:16'><PRE><FONT SIZE='+1'>Full <B><FONT COLOR='#3F3FFF'>KEYBOAD</FONT></B> operation</FONT><BR>     <FONT SIZE='-1'>For IE 4.0</PRE></DIV><PRE><CENTER><FONT SIZE='-1'>LEFT/RIGHT..4,6  ROTATE..5  DOWN..2</CENTER><CENTER><FORM NAME='TetriScript'><HR><INPUT TYPE='text' NAME='LINE' SIZE=15 VALUE ='SELECT LEVEL'>  START/RESET .. HIT S KEY  <INPUT TYPE='text' NAME='PTS' SIZE=15 VALUE ='LEVEL L KEY!'></FORM></CENTER></PRE>")
+			}
+		//-->
+		</SCRIPT>
+	</BODY>
+</HTML>
