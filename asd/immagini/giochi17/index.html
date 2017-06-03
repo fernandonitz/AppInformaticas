@@ -1,0 +1,47 @@
+<HTML>
+
+<HEAD>
+<TITLE>JS Flanker</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function clk(){
+ if (document.forms[0].elements[0].value != "CLICK START"){
+  parent.GAME.document.all.RES.style.posTop = 150
+ }
+}
+//-->
+</SCRIPT>
+
+</HEAD>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+  if(document.layers){
+   document.write('<FRAMESET ROWS="315,*" BORDER="0"><FRAMESET COLS="414,*" BORDER="0"><FRAMESET ROWS="16,*" BORDER="0"><FRAME SRC="sub1.html" NAME="sub0a" NORESIZE SCROLLING="NO"><FRAMESET COLS="16,*" BORDER="0"><FRAME SRC="sub1.html" NAME="sub0b" NORESIZE SCROLLING="NO"><FRAME SRC="nn4.html" NAME="main" NORESIZE SCROLLING="NO"></FRAMESET></FRAMESET><FRAME SRC="score.html" NAME="scr" NORESIZE SCROLLING="NO"></FRAMESET><FRAME SRC="sub2.html" NAME="sub2" NORESIZE SCROLLING="NO"></FRAMESET>')
+}
+//-->
+</SCRIPT>
+
+<BODY BGCOLOR="#7F7F00" LEFTMARGIN="16" TOPMARGIN="16" TEXT="#FFFFFF" ONCLICK="clk()" ONLOAD="if (document.all){document.forms[0].elements[0].value='CLICK START';document.forms[0].elements[1].value='500';document.forms[0].elements[2].value='10';document.forms[0].elements[3].value='2000'}">
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+ ver=navigator.appVersion
+ Nv=ver.charAt(0)
+ if (Nv>=4){
+   if(document.layers){
+    document.write('You can not play this game on your browser.')
+   }else{
+  document.write('<IFRAME SRC="ie4.html" NAME="GAME" WIDTH="400" HEIGHT="300" FRAMEBORDER="0" SCROLLING="no" ALIGN="left" NORESIZE>If you want to play this game, you must use IE4.0 or later.<P></IFRAME>')
+document.write('<FONT COLOR="#CCFFCC" SIZE="+2"><I><B>JS Flanker</B></I><BR></FONT><P><FORM>SCORE:<BR><INPUT TYPE="text" VALUE="CLICK START"><P><PRE><TT><FONT SIZE="-1">Gun:<INPUT TYPE="text" SIZE="6" VALUE="500"><BR><FONT SIZE="-1">Missile:<INPUT TYPE="text" SIZE="6" VALUE="10"><P></TT></PRE>Time Limit:<INPUT TYPE="text" SIZE="6" VALUE="2000"></FONT></FORM><P><CENTER><A HREF="javascript:history.back()">Indietro</A><BR><BR><A HREF="zip.zip">scarica lo zip di questo file</A></CENTER>')
+document.write('<DIV STYLE="position:absolute; top: 320; left: 16">Move..2,4,6,8<TT><FONT COLOR="#7F7F00">XXXX</FONT></TT>Gun..Z<TT><FONT COLOR="#7F7F00">XXXX</FONT></TT>Missile..X<P></DIV>')
+  }
+ }else{
+ document.write("If you want to play this game, you must use NN4.0/IE4.0 or later.")
+ }
+
+//-->
+</SCRIPT>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,26 @@
+<HTML>
+<HEAD>
+<TITLE>SCORE FRAME</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function clk(){
+  parent.main.focus()
+}
+document.onmousedown = clk
+document.captureEvents(Event.MOUSEDOWN)
+function onLD(){
+parent.scr.document.forms[0].elements[0].value = "CLICK START"
+parent.scr.document.forms[0].elements[1].value = 500
+parent.scr.document.forms[0].elements[2].value = 10
+parent.scr.document.forms[0].elements[3].value = 2000
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY  BGCOLOR="#7F7F00" TEXT="#FFFFFF" onclick="clk()" ONLOAD="onLD()">
+<BR>
+<FONT COLOR="#CCFFCC" SIZE="+2"><I><B>JS Flanker</B></I><BR></FONT><P><FORM>SCORE:<BR><INPUT TYPE="text" VALUE="CLICK START"><P><FONT SIZE="-1"><PRE>Gun:    <INPUT TYPE="text" SIZE="6" VALUE="500"><BR>Missile:<INPUT TYPE="text" SIZE="6" VALUE="10"><P></PRE>Time Limit:<INPUT TYPE="text" SIZE="6" VALUE="2000"></FONT></FORM><P><BR><P>
+<CENTER><A HREF="javascript:history.back()" TARGET="_top">BACK</A></CENTER>
+</BODY>
+</HTML>

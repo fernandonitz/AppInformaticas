@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<TITLE>SUB FRAME 2</TITLE>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+ systm=""
+ ver=navigator.appVersion
+ Nv=ver.charAt(0)
+ len=ver.length
+ for(iln=0;iln<len;iln++) if(ver.charAt(iln)=="(") break
+ systm = ver.charAt(iln+1).toUpperCase()
+
+function clk(){
+ if (Nv>=4){
+  if (systm == "C"){
+   parent.main.restarter.style.posTop = 100
+   parent.main.document.forms[1].elements[0].click()
+  }else{
+   parent.main.focus()
+  }
+ }
+}
+
+if (Nv>=4){
+ if (systm!="C"){
+  document.onmousedown = clk
+  document.captureEvents(Event.MOUSEDOWN)
+ }
+}
+
+//-->
+</SCRIPT>
+
+</HEAD>
+<BODY BGCOLOR="#7B68EE" onclick="clk()">
+<DIV ID="DIV1" STYLE='margin-left:16px'>
+<PRE>L/R....4/6 Key   Jump Z Key</PRE><BR>
+</DIV>
+
+</BODY>
+</HTML>

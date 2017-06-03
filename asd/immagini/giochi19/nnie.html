@@ -1,0 +1,843 @@
+<HTML>
+
+<HEAD>
+<TITLE>MAIN FRAME</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var score=0                           //score
+var startFLG=-1                       //start flag
+var gameFLG=0                         //game play flag
+var timerID = null                    //timer ID
+var INT = 25                          //interval (ms)
+var X=100                             //my chr X
+var Y=256
+var IX=0                              //my chr right move
+var IY=0                              //       down
+var DX=0                              //       left
+var DY=0                              //       up
+var IIX=0                             //       right speed up
+var DDX=0                             //       left
+var spCOUNT=0                         //LAYER COUNTER
+var mySP=0                            //my chr COUNT
+var blSP=0                            //block COUNT
+var coSP=0                            //coin COUNT
+var jmpFLG=0                          //jump flag
+var stepFLG=0                         //my chr step flag
+var tmLMT=1000                        //time limit
+var timeC=0                           //time count
+
+var mv1=-1                            //moving block flag 1
+var mvH1=0                            //             HIT flag 1
+var ofs1=0                            //offset 1
+
+var blockX = new Array(99)            //block X
+var blockY = new Array(99)            //      Y
+var coinX = new Array(99)             //coin X
+var coinY = new Array(99)             //     Y
+var coinF = new Array(99)             //     null FLAG
+var kiX = new Array(9)                //mushroom X
+var kiY = new Array(9)                //         Y
+var kiF = new Array(9)                //         null FLAG
+var kiDX = new Array(9)               //         DX
+
+var imgs = new Array(20)              //image data
+
+imgs[0]=new Image();imgs[0].src="boy1c.gif"
+imgs[1]=new Image();imgs[1].src="boy2c.gif"
+imgs[2]=new Image();imgs[2].src="boy4c.gif"
+imgs[3]=new Image();imgs[3].src="boy3c.gif"
+imgs[4]=new Image();imgs[4].src="boy5c.gif"
+
+imgs[5]=new Image();imgs[5].src="coin.gif"
+imgs[6]=new Image();imgs[6].src="null.gif"
+imgs[7]=new Image();imgs[7].src="kinoko.gif"
+
+//IE check
+ systm=""
+ ver=navigator.appVersion
+ len=ver.length
+ for(iln=0;iln<len;iln++) if(ver.charAt(iln)=="(") break
+ systm = ver.charAt(iln+1).toUpperCase()
+
+//---------------------------------------------------------
+//                 main function
+//---------------------------------------------------------
+
+//main function
+function interval1(){
+ clearTimeout(timerID)
+ 
+ timeC=timeC-1
+ parent.scr.document.forms[0].elements[1].value = timeC
+ if (timeC==0){stopG()}
+
+  //moving block write
+   ofs1=ofs1+mv1*4
+   if (ofs1<=-192){mv1=1}
+   if (ofs1>=0){mv1=-1}
+   spMOV(1,blockX[0]*32,blockY[0]*32+ofs1)
+
+
+ stepFLG=stepFLG+1;if (stepFLG>=2){stepFLG=0}
+ if(X<100){X=100;IX=0;DX=0}
+ if(X>1699){X=1699;IX=0;DX=0;stopG()}
+
+ DX=DX+DDX;if (DX>8){DX=8;DDX=0}else{if (DX<0){DX=0;DDX=0}}
+ IX=IX+IIX;if (IX>8){IX=8;DDX=0}else{if (IX<0){IX=0;IIX=0}}
+
+ X=X+IX-DX
+
+ if (jmpFLG!=0){Y=Y-DY;if (Y>=300){Y=300;jmpFLG=0};DY=DY-1}
+ parent.scr.document.forms[0].elements[0].value = score
+
+ if (IX-DX<0){
+  if (jmpFLG==0){imgchg(mySP,3+stepFLG)}else{imgchg(mySP,4)}
+ }else{
+  if (IX-DX>0){
+   if (jmpFLG==0){imgchg(mySP,1+stepFLG)}else{imgchg(mySP,2)}
+  }else{
+   if (jmpFLG==0){imgchg(mySP,0)}else{imgchg(mySP,2)}
+  }
+ }
+
+ kmove()
+ hitCHK(X,Y)
+ getCHK(X,Y)
+ atCHK(X,Y)
+
+ spMOV(mySP,X,Y)
+ sc2(X-100)
+ if (Y>=300){stopG()}
+ if (mvH1==1){Y=Y+4}
+ if (gameFLG==1){timerID = setTimeout("interval1()",INT)}
+}
+
+//---------------------------------------------------------
+//                 sub functions
+//---------------------------------------------------------
+
+//CLICK START
+function startG(){
+ document.onkeydown = keyDown
+ document.onkeyup = keyUp
+ if (systm!="C"){
+  document.captureEvents(Event.KEYDOWN|Event.KEYUP)
+  document.layers["starter"].moveTo(-1000,-1000)
+  document.layers["CLRmes"].moveTo(0,0)
+  document.layers["GMOmes"].moveTo(0,0)
+  document.layers["TMOmes"].moveTo(0,0)
+ }else{
+  starter.style.posTop = -1000
+  starter.style.posLeft = 150
+  CLRmes.style.posTop = -1000
+  GMOmes.style.posTop = -1000
+  TMOmes.style.posTop = -1000
+ }
+ for (ia=blSP+1; ia<coSP+1; ia++){
+  imgchg(ia,5)
+  coinF[ia-blSP-1]=0
+ }
+ for (ia=0; ia<6; ia++){
+  imgchg(coSP+ia+1,7)
+  kiF[ia]=0
+  kiDX[ia]=-4
+ }
+
+
+ BGMSTART()
+ gameFLG=1
+ score=0
+ DDX=0;IIX=0;DX=0;IX=0
+ timeC=tmLMT
+ parent.scr.document.forms[0].elements[0].value = score
+ parent.scr.document.forms[0].elements[0].value = tmLMT
+
+ X=100;Y=256
+ timerID = setTimeout("interval1()",1)
+}
+
+//GAME STOP
+function stopG(){
+ clearTimeout(timerID)
+ if (timeC<=0){
+  if (systm!="C"){
+   document.layers["TMOmes"].moveTo(0,1050)
+  }else{
+   TMOmes.style.posTop = 50
+   TMOmes.style.posLeft = 20+X
+  }
+ }else{
+  if (X>=1699){
+   if (systm!="C"){
+    document.layers["CLRmes"].moveTo(0,1050)
+   }else{
+    CLRmes.style.posTop = 50
+    CLRmes.style.posLeft = 50+X
+   }
+  }else{
+   if (systm!="C"){
+    document.layers["GMOmes"].moveTo(0,1050)
+   }else{
+    GMOmes.style.posTop = 50
+    GMOmes.style.posLeft = 20+X
+   }
+  }
+ }
+
+ gameFLG=0
+ startFLG=0
+ if (systm!="C"){
+  document.layers["starter"].moveTo(0,0)
+ }else{
+  starter.style.posTop = 100
+  starter.style.posLeft = 50+X
+ }
+ BGMSTOP()
+}
+
+
+function BGMSTOP(){
+ if (systm == "C"){
+  BG.outerHTML = "<div id='BG'></DIV>"
+ }else{
+  document.embeds[0].stop()
+ }
+}
+
+function BGMSTART(){
+ if (systm == "C"){
+  BG.outerHTML = "<div id='BG'><BGSOUND LOOP='-1' SRC='Soul_Food.mid'></DIV>"
+ }else{
+  document.embeds[0].stop()
+  document.embeds[0].play(true)
+ }
+}
+
+
+//LAYER SETUP
+function spINI(spX,spY,spIMG){
+  if (systm!="C"){
+   document.write("<LAYER LEFT="+spX+" TOP="+spY+"><IMG SRC='"+spIMG+"'></LAYER>")
+  }else{
+   with (document) {
+    write("<IMG SRC='"+spIMG+"' STYLE='position:absolute'>")
+    images[spCOUNT].style.posLeft = spX
+    images[spCOUNT].style.posTop =  spY
+   }
+  }
+spCOUNT=spCOUNT+1
+}
+
+//LAYER MOVE
+function spMOV(spNO,spX,spY){
+ if (systm!="C"){
+  document.layers[0].layers[spNO].moveTo(spX,spY)
+ }else{
+  document.images[spNO].style.posLeft = spX
+  document.images[spNO].style.posTop =  spY
+ }
+}
+
+//IMAGE CHANGE
+function imgchg(imgNo,dataNo){
+ if (systm!="C"){
+  document.layers[0].layers[imgNo].document.images[0].src=imgs[dataNo].src
+ }else{
+  document.images[imgNo].src=imgs[dataNo].src
+ }
+}
+
+//SCROLL
+function sc2(scr2){
+ if (systm!="C"){
+  document.layers[0].left=-scr2
+ }else{
+  window.scroll(scr2,0)
+ }
+}
+
+//ON KEY DOWN
+function keyDown(DnEvents){
+ if (systm != "C"){
+  k=DnEvents.which
+  if (k == 54){IIX=2}     // 6
+  if (k == 52){DDX=2}     // 4
+
+  if (k == 90){if (jmpFLG==0){DY=15;jmpFLG=1}}     //Z
+  if (k == 122){if (jmpFLG==0){DY=15;jmpFLG=1}}    //z
+ }else{
+  k=window.event.keyCode
+  if (k == 102){IIX=2}    // 6
+  if (k == 100){DDX=2}    // 4
+
+  if (k == 54){IIX=2}     // 6
+  if (k == 52){DDX=2}     // 4
+
+  if (k == 39){IIX=2}     // Right
+  if (k == 37){DDX=2}     // Left
+
+  if (k == 90){if (jmpFLG==0){DY=15;jmpFLG=1}}     //Z
+  if (k == 122){if (jmpFLG==0){DY=15;jmpFLG=1}}    //z
+
+ }
+}
+
+//ON KEY UP
+function keyUp(UpEvents){
+ if (systm != "C"){
+  k=UpEvents.which
+  if (k == 54){IIX=-2}
+  if (k == 52){DDX=-2}
+
+  if (k == 90){if (DY>0){DY=DY/2}}     //Z
+  if (k == 122){if (DY>0){DY=DY/2}}    //z
+
+ }else{
+  k=window.event.keyCode
+  if (k == 102){IIX=-2}    // 6
+  if (k == 100){DDX=-2}    // 4
+
+  if (k == 54){IIX=-2}     // 6
+  if (k == 52){DDX=-2}     // 4
+
+  if (k == 39){IIX=-2}     // Right
+  if (k == 37){DDX=-2}     // Left
+
+  if (k == 90){if (DY>0){DY=DY/2}}     //Z
+  if (k == 122){if (DY>0){DY=DY/2}}    //z
+
+ }
+}
+
+//BLOCK SETUP
+function bs(bx,by){
+ blockX[spCOUNT-1]=bx;blockY[spCOUNT-1]=by
+ spINI(bx*32,by*32,'block.gif')
+}
+
+//COIN SETUP
+function cs(cx,cy){
+ coinX[spCOUNT-blSP-1]=cx;coinY[spCOUNT-blSP-1]=cy
+ spINI(cx*32+8,cy*32+8,'coin.gif')
+}
+
+//MUSHROOM SETUP
+function ki(kx,ky){
+ kiX[spCOUNT-coSP-1]=kx*32;kiY[spCOUNT-coSP-1]=ky*32
+ spINI(kx*32,ky*32,'kinoko.gif')
+}
+
+//MUSHROOM MOVE
+function kmove(){
+ kiX[0]=kiX[0]+kiDX[0]
+  if (kiX[0]<=6*32+8){kiDX[0]=4}else{if (kiX[0]>=8*32){kiDX[0]=-4}}
+  if (X>9*32+100){kiF[0]=0;imgchg(coSP+1+0,7)}
+ kiX[1]=kiX[1]+kiDX[1]
+  if (kiX[1]<=11*32){kiDX[1]=4}else{if (kiX[1]>=13*32){kiDX[1]=-4}}
+  if (X>14*32+100){kiF[1]=0;imgchg(coSP+1+1,7)}
+ kiX[2]=kiX[2]+kiDX[2]
+  if (kiX[2]<=19*32){kiDX[2]=4}else{if (kiX[2]>=21*32-4){kiDX[2]=-4}}
+  if (X>22*32+100){kiF[2]=0;imgchg(coSP+1+2,7)}
+  if (X<19*32-300){kiF[2]=0;imgchg(coSP+1+2,7)}
+ kiX[3]=kiX[3]+kiDX[3]
+  if (kiX[3]<=24*32){kiDX[3]=4}else{if (kiX[3]>=26*32){kiDX[3]=-4}}
+  if (X>27*32+100){kiF[3]=0;imgchg(coSP+1+3,7)}
+  if (X<24*32-300){kiF[3]=0;imgchg(coSP+1+3,7)}
+ kiX[4]=kiX[4]+kiDX[4]
+  if (kiX[4]<=32*32){kiDX[4]=4}else{if (kiX[4]>=33*32){kiDX[4]=-4}}
+  if (X>34*32+100){kiF[4]=0;imgchg(coSP+1+4,7)}
+  if (X<32*32-300){kiF[4]=0;imgchg(coSP+1+4,7)}
+ kiX[5]=kiX[5]+kiDX[5]
+  if (kiX[5]<=45*32){kiDX[5]=4}else{if (kiX[5]>=46*32){kiDX[5]=-4}}
+  if (X>47*32+100){kiF[5]=0;imgchg(coSP+1+5,7)}
+  if (X<45*32-300){kiF[5]=0;imgchg(coSP+1+5,7)}
+
+ for (ik=0; ik<6; ik++){
+  spMOV(coSP+1+ik,kiX[ik],kiY[ik])
+ }
+}
+
+
+//HIT CHECK
+function hitCHK(hx,hy){
+ tmpGND=0;tmpGn=0;mvH1=0
+  ltFLG=0
+  rtFLG=0
+  lfFLG=0
+  rfFLG=0
+  a0FLG=0
+ for (ia=0; ia<blSP+1; ia++){
+  tmpHIT=0;tmpLT=0;tmpRT=0;tmpLF=0;tmpRF=0;tmpBD=0
+  tmpXa=blockX[ia]*32;tmpXb=tmpXa+31
+  tmpYa=blockY[ia]*32;tmpYb=tmpYa+31
+  if (ia==0){tmpYa=tmpYa+ofs1;tmpYb=tmpYb+ofs1}
+  tmphx=hx+31;tmphy=hy+31
+
+  //Ltop
+  if (hx>=tmpXa){
+   if (hx<=tmpXb){
+    if (hy>=tmpYa){
+     if (hy<=tmpYb){
+      tmpHIT=1;tmpLT=1
+     }
+    }
+   }
+  }
+  //Rtop
+  if (tmphx>=tmpXa){
+   if (tmphx<=tmpXb){
+    if (hy>=tmpYa){
+     if (hy<=tmpYb){
+      tmpHIT=1;tmpRT=1
+     }
+    }
+   }
+  }
+  //Lfoot
+  if (hx>=tmpXa){
+   if (hx<=tmpXb){
+    if (tmphy>=tmpYa){
+     if (tmphy<=tmpYb){
+      tmpHIT=1;tmpLF=1
+     }
+    }
+   }
+  }
+  //Rfoot
+  if (tmphx>=tmpXa){
+   if (tmphx<=tmpXb){
+    if (tmphy>=tmpYa){
+     if (tmphy<=tmpYb){
+      tmpHIT=1;tmpRF=1
+     }
+    }
+   }
+  }
+
+  if (hx+4>=tmpXa){
+   if (hx+4<=tmpXb){
+    if (tmphy+1>=tmpYa){
+     if (tmphy+1<=tmpYb){
+      tmpGND=1;tmpGn=ia
+     }
+    }
+   }
+  }
+  if (tmphx-4>=tmpXa){
+   if (tmphx-4<=tmpXb){
+    if (tmphy+1>=tmpYa){
+     if (tmphy+1<=tmpYb){
+      tmpGND=1;tmpGn=ia
+     }
+    }
+   }
+  }
+
+
+
+
+
+
+
+
+  if (tmpHIT==1){
+   if (IX-DX>=0){
+    if (DY<=0){
+     if (tmpRT==1){
+      X=tmpXa-32;DX=0;IX=0;rtFLG=1
+     }else{
+      if (tmpLF==1){
+       Y=tmpYa-32;jmpFLG=0;DY=0;ltFLG=1
+      }else{
+       if (jmpFLG==0){if (ia==0){Y=tmpYa-32;a0FLG=1;DY=0}}
+       if (ltFLG==0){
+        if (rtFLG==0){
+         if (a0FLG==0){
+          bdCHK(tmphx,tmphy,tmpXa,tmpYa)
+          if (tmpBD==0){
+           Y=tmpYa-32;jmpFLG=0;DY=0
+          }else{
+           X=tmpXa-32;DX=0;IX=0
+          }
+         }
+        }
+       }
+      }
+     }
+    }else{
+     if (tmpLT==1){
+      Y=tmpYa+32;DY=0;ltFLG=1
+     }else{
+      if (tmpRF==1){
+       X=tmpXa-32;DX=0;IX=0;rfFLG=1
+      }else{
+       if (jmpFLG==0){if (ia==0){Y=tmpYa-32;a0FLG=1;DY=0}}
+       if (ltFLG==0){
+        if (rfFLG==0){
+         if (a0FLG==0){
+          bdCHK(tmphx,hy,tmpXa,tmpYa)
+          if (tmpBD==0){
+           Y=tmpYa+32;jmpFLG=0;DY=0
+          }else{
+           X=tmpXa-32;DX=0;IX=0
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }else{
+    if (DY<=0){
+     if (tmpLT==1){
+      X=tmpXa+32;DX=0;IX=0;ltFLG=1
+     }else{
+      if (tmpRF==1){
+       Y=tmpYa-32;jmpFLG=0;rfFLG=1
+      }else{
+       if (jmpFLG==0){if (ia==0){Y=tmpYa-32;a0FLG=1;DY=0}}
+       if (ltFLG==0){
+        if (rfFLG==0){
+         if (a0FLG==0){
+          bdCHK(hx,tmphy,tmpXb,tmpYa)
+          if (tmpBD==0){
+           Y=tmpYa-32;jmpFLG=0;DY=0
+          }else{
+           X=tmpXa+32;DX=0;IX=0
+          }
+         }
+        }
+       }
+      }
+     }
+    }else{
+     if (tmpRT==1){
+      Y=tmpYa+32;rtFLG=1
+     }else{
+      if (tmpLF==1){
+       X=tmpXa+32;DX=0;IX=0;lfFLG=1
+      }else{
+       if (jmpFLG==0){if (ia==0){Y=tmpYa-32;a0FLG=1;DY=0}}
+       if (lfFLG==0){
+        if (rtFLG==0){
+         if (a0FLG==0){
+          bdCHK(hx,hy,tmpXb,tmpYa)
+          if (tmpBD==0){
+           Y=tmpYa+32;jmpFLG=0;DY=0
+          }else{
+           X=tmpXa+32;DX=0;IX=0
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+
+ //for loop end
+ }
+
+
+
+ if (jmpFLG==0){
+  if (tmpGND==0){
+   jmpFLG=1;DY=0
+  }else{
+   if (tmpGn==0){
+    Y=blockY[0]*32+ofs1-32;mvH1=1
+   }
+  }
+ }
+}
+
+
+
+//GET CHECK
+function getCHK(hx,hy){
+ for (ia=0; ia<blSP+1; ia++){
+  tmpGET=0
+  tmpXa=coinX[ia]*32+12;tmpXb=tmpXa+9
+  tmpYa=coinY[ia]*32+8;tmpYb=tmpYa+15
+  tmphx=hx+31;tmphy=hy+31
+
+  if (tmpXa>=hx){
+   if (tmpXa<=tmphx){
+    if (tmpYa>=hy){
+     if (tmpYa<=tmphy){
+      tmpGET=1
+     }
+    }
+   }
+  }
+  if (tmpXb>=hx){
+   if (tmpXb<=tmphx){
+    if (tmpYa>=hy){
+     if (tmpYa<=tmphy){
+      tmpGET=1
+     }
+    }
+   }
+  }
+
+  if (tmpXa>=hx){
+   if (tmpXa<=tmphx){
+    if (tmpYb>=hy){
+     if (tmpYb<=tmphy){
+      tmpGET=1
+     }
+    }
+   }
+  }
+  if (tmpXb>=hx){
+   if (tmpXb<=tmphx){
+    if (tmpYb>=hy){
+     if (tmpYb<=tmphy){
+      tmpGET=1
+     }
+    }
+   }
+  }
+
+  if (tmpGET==1){
+   imgchg(blSP+ia+1,6)
+   if (coinF[ia]==0){score=score+250}
+   coinF[ia]=1
+  }
+
+ }
+}
+
+//BORDER CHECK
+function bdCHK(chX,chY,bdX,bdY){
+ tmpBDY=-1000
+ if (IX-DX!=0){tmpBDY=(-DY/(IX-DX))*(bdX-chX)+chY}
+ tmpBD=0
+ if (tmpBDY>bdY){if (tmpBDY<bdY+31){tmpBD=1}}
+}
+
+
+//ATTACK CHECK
+function atCHK(hx,hy){
+ for (ia=0; ia<6; ia++){
+  tmpATA=0
+  tmpXa=kiX[ia]+5;tmpXb=tmpXa+21
+  tmpYa=kiY[ia]+8;tmpYb=tmpYa+21
+  tmphx=hx+31;tmphy=hy+31
+
+  if (tmpXa>=hx){
+   if (tmpXa<=tmphx){
+    if (tmpYa>=hy){
+     if (tmpYa<=tmphy){
+      tmpATA=1
+     }
+    }
+   }
+  }
+  if (tmpXb>=hx){
+   if (tmpXb<=tmphx){
+    if (tmpYa>=hy){
+     if (tmpYa<=tmphy){
+      tmpATA=1
+     }
+    }
+   }
+  }
+
+  if (tmpXa>=hx){
+   if (tmpXa<=tmphx){
+    if (tmpYb>=hy){
+     if (tmpYb<=tmphy){
+      tmpATA=1
+     }
+    }
+   }
+  }
+  if (tmpXb>=hx){
+   if (tmpXb<=tmphx){
+    if (tmpYb>=hy){
+     if (tmpYb<=tmphy){
+      tmpATA=1
+     }
+    }
+   }
+  }
+
+  if (tmpATA==1){
+   if (DY<0){
+    imgchg(coSP+ia+1,6)
+    if (kiF[ia]==0){score=score+100}
+    kiF[ia]=1
+   }else{
+    if (kiF[ia]==0){stopG()}
+   }
+  }
+
+ }
+}
+
+
+
+
+//-->
+</SCRIPT>
+</HEAD>
+
+<BODY BGCOLOR="#00BFFF" ONLOAD="startFLG=0">
+
+<DIV ID="BG"></DIV>
+<EMBED SRC="Soul_Food.mid" AUTOSTART=false HIDDEN=TRUE>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+document.write("<LAYER TOP=0 LEFT=0>")
+//BLOCK DATA
+spINI(0,294,'sea2.gif')
+ bs(16,8)
+bs(0,9)
+bs(1,9)
+bs(2,9)
+bs(3,9)
+bs(4,9)
+bs(5,9)
+bs(6,6)
+bs(7,6)
+bs(8,6)
+bs(11,8)
+bs(12,8)
+bs(13,8)
+bs(19,2)
+bs(20,2)
+bs(21,2)
+bs(20,9)
+bs(23,3)
+bs(24,9)
+bs(25,9)
+bs(26,9)
+bs(27,6)
+bs(28,6)
+bs(29,6)
+bs(32,8)
+bs(33,8)
+bs(35,6)
+bs(37,4)
+bs(40,3)
+bs(43,8)
+bs(45,3)
+bs(46,3)
+bs(45,5)
+bs(46,5)
+bs(49,9)
+bs(50,9)
+bs(51,9)
+bs(52,9)
+bs(53,9)
+bs(54,9)
+bs(55,9)
+bs(56,9)
+bs(57,9)
+bs(58,9)
+bs(59,9)
+bs(60,9)
+bs(61,9)
+bs(62,9)
+ blSP=spCOUNT-1
+
+//COIN DATA
+cs(7,4)
+cs(8,4)
+cs(12,0)
+cs(13,0)
+cs(14,0)
+cs(18,4)
+cs(19,4)
+cs(18,5)
+cs(19,5)
+cs(18,6)
+cs(19,6)
+cs(19,0)
+cs(20,0)
+cs(21,0)
+cs(20,8)
+cs(21,6)
+cs(22,6)
+cs(26,0)
+cs(26,1)
+cs(26,2)
+cs(27,5)
+cs(28,5)
+cs(29,5)
+cs(32,3)
+cs(33,3)
+cs(32,4)
+cs(33,4)
+cs(35,1)
+cs(38,0)
+cs(42,4)
+cs(43,4)
+cs(44,4)
+cs(45,4)
+cs(46,4)
+cs(47,4)
+ coSP=spCOUNT-1
+
+//MUSHROOM DATA
+ki(8,5)
+ki(13,7)
+ki(21,1)
+ki(26,8)
+ki(33,7)
+ki(46,2)
+
+
+
+ spINI(1728,256,'qn.gif')
+
+//my chr (imgNo mySP)
+ mySP=spCOUNT
+ spINI(100,256,'boy1c.gif')
+  document.write("</LAYER>")
+
+//-->
+</SCRIPT>
+
+<LAYER TOP=0 LEFT=0 NAME="CLRmes">
+<DIV ID="CLRmes" STYLE='position:absolute; top: -1000; left: 150'>
+<FONT STYLE="font-size:24px" COLOR="#006600"><B>CLEAR!</B></FONT><P>
+</DIV>
+</LAYER>
+
+<LAYER TOP=0 LEFT=0 NAME="TMOmes">
+<DIV ID="TMOmes" STYLE='position:absolute; top: -1000; left: 120'>
+<FONT STYLE="font-size:24px" COLOR="#990000"><B>TIME OVER!</B></FONT><P>
+</DIV>
+</LAYER>
+
+<LAYER TOP=0 LEFT=0 NAME="GMOmes">
+<DIV ID="GMOmes" STYLE='position:absolute; top: -1000; left: 120'>
+<FONT STYLE="font-size:24px" COLOR="#990000"><B>GAME OVER!</B></FONT><P>
+</DIV>
+</LAYER>
+
+
+<LAYER TOP=0 LEFT=0 NAME="starter">
+<DIV ID="starter" STYLE='position:absolute; top: 100; left: 150'>
+<FORM NAME="FORM1">
+<INPUT TYPE="button" VALUE="START" ONCLICK="if (startFLG!=1){startFLG=1;startG();if (systm!='C'){blur()}}else{blur()}">
+</FORM>
+</DIV>
+</LAYER>
+
+
+<LAYER TOP=0 LEFT=0 NAME="restarter">
+<DIV ID="restarter" STYLE='position:absolute; top: -1000; left: 150'>
+<FORM NAME="FORM2">
+<INPUT TYPE="button" VALUE="PAUSE!" ONCLICK="if (startFLG==1){clearTimeout(timerID);startFLG=2;restarter.style.posLeft=X+50}else{if (startFLG==2){startFLG=1;blur();restarter.style.posTop = -1000;timerID = setTimeout('interval1()',INT)}else{restarter.style.posTop = -1000}}">
+</FORM>
+</DIV>
+</LAYER>
+
+
+</BODY>
+</HTML>

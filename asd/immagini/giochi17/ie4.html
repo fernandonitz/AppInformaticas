@@ -1,0 +1,835 @@
+<HTML>
+
+<HEAD>
+<TITLE>MAIN PROGRAM of JS FLANKER for IE4.0</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var timerID = setTimeout("",1)
+var IX=0                                        //key flag
+var IY=0
+var DX=0
+var DY=0
+var FIRE=0                                      //fire flag
+var MSL=0                                       //missile flag
+var MSLr=10                                     //missile remain
+var MSLc=0                                      //missile counter
+var MSLx = new Array(8)                         //missile X
+var MSLy = new Array(8)                         //missile Y
+var TGT=0                                       //missile target
+
+var eMSLx=0                                     //enemy missile
+var eMSLy=0
+var eMSLdx=0
+var eMSLdy=0
+
+var SCORE=0
+var Mtimer=0                                    //Main Timer
+var AHtimer=0                                   //AH64 Timer
+var ahFLG=0                                     //AH64 FLAG
+
+var GUN=500
+var endFLG=0
+
+var enemy = new Array(3)                        //2D Array for enemy 
+for (i=0; i<4; i++){enemy[i] = new Array(4)}
+enemy[0][0]=280   //enemy0.X
+enemy[0][1]=100   //enemy0.Y
+enemy[0][2]=0     //enemy0.size
+enemy[0][3]=0     //enemy0.PTN
+enemy[0][4]=0     //enemy0.oldsize
+enemy[0][5]=0     //enemy0.timer
+
+enemy[1][0]=150   //enemy1.X
+enemy[1][1]=120   //enemy1.Y
+enemy[1][2]=0     //enemy1.size
+enemy[1][3]=0     //enemy1.PTN
+enemy[1][4]=0     //enemy1.oldsize
+enemy[1][5]=0     //enemy1.timer
+
+var Hwait = new Array(10)  //hit wait
+for (i=0; i<8; i++){
+ Hwait[i]=0
+}
+
+
+var icons = new Array(99)                       //image data
+
+icons[0]=new Image();icons[0].src="f4c0.gif"
+icons[1]=new Image();icons[1].src="f4c1.gif"
+icons[2]=new Image();icons[2].src="f4c2.gif"
+icons[3]=new Image();icons[3].src="f4c3.gif"
+icons[4]=new Image();icons[4].src="f4c4.gif"
+icons[5]=new Image();icons[5].src="f4c5.gif"
+icons[6]=new Image();icons[6].src="f4c6.gif"
+icons[7]=new Image();icons[7].src="f4c7.gif"
+icons[8]=new Image();icons[8].src="f4c8.gif"
+icons[9]=new Image();icons[9].src="f4c9.gif"
+icons[10]=new Image();icons[10].src="f4ca.gif"
+icons[11]=new Image();icons[11].src="f4cb.gif"
+icons[12]=new Image();icons[12].src="f4cc.gif"
+icons[13]=new Image();icons[13].src="f4cd.gif"
+icons[14]=new Image();icons[14].src="f4ce.gif"
+icons[15]=new Image();icons[15].src="f4cf.gif"
+
+icons[20]=new Image();icons[20].src="f15c0.gif"
+icons[21]=new Image();icons[21].src="f15c1.gif"
+icons[22]=new Image();icons[22].src="f15c2.gif"
+icons[23]=new Image();icons[23].src="f15c3.gif"
+icons[24]=new Image();icons[24].src="f15c4.gif"
+icons[25]=new Image();icons[25].src="f15c5.gif"
+icons[26]=new Image();icons[26].src="f15c6.gif"
+icons[27]=new Image();icons[27].src="f15c7.gif"
+icons[28]=new Image();icons[28].src="f15c8.gif"
+icons[29]=new Image();icons[29].src="f15c9.gif"
+icons[30]=new Image();icons[30].src="f15ca.gif"
+icons[31]=new Image();icons[31].src="f15cb.gif"
+icons[32]=new Image();icons[32].src="f15cc.gif"
+icons[33]=new Image();icons[33].src="f15cd.gif"
+icons[34]=new Image();icons[34].src="f15ce.gif"
+icons[35]=new Image();icons[35].src="f15cf.gif"
+
+icons[40]=new Image();icons[40].src="ah64c0.gif"
+icons[41]=new Image();icons[41].src="ah64c1.gif"
+icons[42]=new Image();icons[42].src="ah64c2.gif"
+icons[43]=new Image();icons[43].src="ah64c3.gif"
+icons[44]=new Image();icons[44].src="ah64c4.gif"
+icons[45]=new Image();icons[45].src="ah64c5.gif"
+icons[46]=new Image();icons[46].src="ah64c6.gif"
+icons[47]=new Image();icons[47].src="ah64c7.gif"
+icons[48]=new Image();icons[48].src="ah64c8.gif"
+icons[49]=new Image();icons[49].src="ah64c9.gif"
+icons[50]=new Image();icons[50].src="ah64ca.gif"
+icons[51]=new Image();icons[51].src="ah64cb.gif"
+icons[52]=new Image();icons[52].src="ah64cc.gif"
+icons[53]=new Image();icons[53].src="ah64cd.gif"
+icons[54]=new Image();icons[54].src="ah64ce.gif"
+icons[55]=new Image();icons[55].src="ah64cf.gif"
+
+icons[90]=new Image();icons[90].src="su27c.gif"
+icons[91]=new Image();icons[91].src="su27c2.gif"
+icons[92]=new Image();icons[92].src="su27c3.gif"
+
+icons[94]=new Image();icons[94].src="fire3c.gif"
+icons[95]=new Image();icons[95].src="fire2c.gif"
+
+icons[96]=new Image();icons[96].src="hit0.gif"
+icons[97]=new Image();icons[97].src="hit1.gif"
+
+icons[98]=new Image();icons[98].src="fire1c.gif"
+icons[99]=new Image();icons[99].src="null.gif"
+
+var fireNo = new Array(8)  //2D Array for My Bullet
+for (i=0; i<8; i++){fireNo[i] = new Array(2)}
+for (i=0; i<8; i++){
+ fireNo[i][0]=0
+ fireNo[i][1]=-1000
+ fireNo[i][2]=0
+}
+
+
+
+//DEFINE FOR IE
+var spCOUNT=0                                   //layer counter
+var sizeF = new Array(25)                       //fire size
+var Buloff=0                                    //Bullet No offset
+
+//------------------------------------------------------
+//------------------ MAIN FUNCTION ---------------------
+//------------------------------------------------------
+
+function intervalT(){
+ clearTimeout(timerID)
+
+ rollHR()
+ eneM()
+ bulW()
+ mslW()
+
+ if (GUN<=0){if (MSLr<=0){if (MSLc==0){endFLG=1}}}
+ if (endFLG==0){
+  Su27w()
+  if (RES.style.posTop == -1000){timerID = setTimeout("intervalT()",50)}
+ }else{
+  edG()
+ }
+}
+
+
+
+//-------------------------------------------------------
+//----------- SUB FUNCTIONS (FOR IE and NN) -------------
+//-------------------------------------------------------
+
+//START GAME
+function startG(){
+ timerID = setTimeout("intervalT()",50)
+ rol=0
+ tmpPitch=0
+ tmpPTN=0
+ STA.style.posTop = -1000
+ parent.document.forms[0].elements[0].value = 0
+}
+
+
+
+//KEY DOWN
+function keyDown(DnEvents){
+  k=window.event.keyCode
+  if (k == 98){IY=1}     //2
+  if (k == 104){DY=1}    //8
+  if (k == 102){IX=1}    //6
+  if (k == 100){DX=1}    //4
+
+  if (k == 50){IY=1}     //2
+  if (k == 56){DY=1}     //8
+  if (k == 54){IX=1}     //6
+  if (k == 52){DX=1}     //4
+
+  if (k == 75){IY=1}     //K
+  if (k == 73){DY=1}     //I
+  if (k == 76){IX=1}     //L
+  if (k == 74){DX=1}     //J
+
+  if (k == 107){IY=1}    //k
+  if (k == 105){DY=1}    //i
+  if (k == 108){IX=1}    //l
+  if (k == 106){DX=1}    //j
+
+  if (k == 90) {FIRE=1}  //Z
+  if (k == 122){FIRE=1}  //z
+  if (k == 88) {MSL=1}   //X
+  if (k == 120){MSL=1}   //x
+
+}
+
+//KEY UP
+function keyUp(UpEvents){
+  k=window.event.keyCode
+  if (k == 98){IY=0}     //2Key
+  if (k == 104){DY=0}    //8
+  if (k == 102){IX=0}    //6
+  if (k == 100){DX=0}    //4
+
+  if (k == 50){IY=0}     //2
+  if (k == 56){DY=0}     //8
+  if (k == 54){IX=0}     //6
+  if (k == 52){DX=0}     //4
+
+  if (k == 75){IY=0}     //K
+  if (k == 73){DY=0}     //I
+  if (k == 76){IX=0}     //L
+  if (k == 74){DX=0}     //J
+
+  if (k == 107){IY=0}    //k
+  if (k == 105){DY=0}    //i
+  if (k == 108){IX=0}    //l
+  if (k == 106){DX=0}    //j
+
+  if (k == 90) {FIRE=0}  //Z
+  if (k == 122){FIRE=0}  //z
+  if (k == 88) {MSL=0}   //X
+  if (k == 120){MSL=0}   //x
+
+}
+
+//HORIZON CLEAR
+function hrclr(){
+ spMOV(1,-1000,0)
+ spMOV(2,-1000,0)
+ spMOV(3,-1000,0)
+ spMOV(4,-1000,0)
+}
+
+//HORIZON WRITE
+function roll(pitch,bank){
+ hrclr()
+ if (pitch==0){pitch=0.1}
+ with (Math){
+  if (sin(bank)==0){bank=bank+0.001}
+  if (cos(bank)==0){bank=bank+0.001}
+  if (bank>=PI){bank=bank-PI*2}
+  if (bank<=-PI){bank=bank+PI*2}
+   tmpS=(pitch)*sin(bank)
+   tmpC=(pitch)*cos(bank)
+   tmpSC=sin(bank)/cos(bank)
+   tmpPx=200+tmpS
+   tmpPy=150-tmpC
+   tmpCy=tmpPy-tmpSC*tmpPx
+
+   tmpX2=(300-tmpCy)/tmpSC
+   tmpX1=abs(tmpX2-((-tmpCy)/tmpSC))
+   tmpY2=tmpSC*400+tmpCy
+   tmpY1=abs(tmpY2-tmpCy)
+
+  if (bank>=PI*3/4){
+   zoom(2,400,tmpY1)
+   spMOV(2,0,300-tmpY2-tmpY1)
+   spMOV(0,0,300-tmpY2-tmpY1-299)
+  }else{
+   if (bank>=PI/2){
+    zoom(2,tmpX1,300)
+    spMOV(2,tmpX2,0)
+    spMOV(0,tmpX2+tmpX1-1,0)
+   }else{
+    if (bank>=PI/4){
+     zoom(1,tmpX1,300)
+     spMOV(1,tmpX2-tmpX1,0)
+     spMOV(0,tmpX2-1,0)
+    }else{
+     if (bank>=0){
+      zoom(1,400,tmpY1)
+      spMOV(1,0,300-tmpY2)
+      spMOV(0,0,300-tmpY2+tmpY1-1)
+     }else{
+      if (bank>=-PI/4){
+       zoom(3,400,tmpY1)
+       spMOV(3,0,300-tmpY2-tmpY1)
+       spMOV(0,0,300-tmpY2-1)
+      }else{
+       if (bank>=-PI/2){
+        zoom(3,tmpX1,300)
+        spMOV(3,tmpX2,0)
+        spMOV(0,tmpX2-399,0)
+       }else{
+        if (bank>=-PI*3/4){
+         zoom(4,tmpX1,300)
+         spMOV(4,tmpX2-tmpX1,0)
+         spMOV(0,tmpX2-tmpX1-399,0)
+        }else{
+         zoom(4,400,tmpY1)
+         spMOV(4,0,300-tmpY2)
+         spMOV(0,0,300-tmpY2-299)
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
+
+//LAYER MOVE
+function spMOV(spNO,spX,spY){
+ with (document) {
+   images[spNO].style.posLeft = spX
+   images[spNO].style.posTop =  spY
+ }
+}
+
+//ENEMY APPEARANCE
+function eneA(){
+ if (AHtimer<=300){
+  enemy[i0][0]=100+200*Math.random()
+  enemy[i0][1]=100+100*Math.random()
+  enemy[i0][2]=0
+  enemy[i0][3]=14
+  enemy[i0][5]=0-Math.floor(20*Math.random())
+ }else{
+  enemy[i0][0]=-1000
+  enemy[i0][1]=-1000
+  enemy[i0][2]=0
+  enemy[i0][3]=0
+  enemy[i0][5]=-1000
+ }
+  if (enemy[0][0]<-500){
+   if (enemy[1][0]<-500){
+    ahFLG=1
+    AHtimer=0
+    enemy[0][0]=280+30*Math.random()
+    enemy[0][1]=100+100*Math.random()
+    enemy[0][2]=0
+    enemy[0][3]=0
+    enemy[0][5]=-1000
+   }
+  }
+}
+
+
+//ENEMY MOVE
+function eneM(){
+i0R=1
+Mtimer=Mtimer+1
+AHtimer=AHtimer+1
+parent.document.forms[0].elements[3].value = 2000-Mtimer
+if (Mtimer==2000){endFLG=1}
+
+if (ahFLG==0){
+if (Mtimer>=200){i0R=2}
+for (i0=0; i0<i0R; i0++){
+ if (Hwait[i0]==1){
+  Hwait[i0]=2
+   eneV(5+i0,enemy[i0][2]*5,97)
+ }else{
+  if (Hwait[i0]==2){
+   Hwait[i0]=0
+   eneV(5+i0,enemy[i0][2]*5,99)
+   eneA()
+  }else{
+
+
+ with (Math){
+  enemy[i0][2]=enemy[i0][2]+1
+  enemy[i0][5]=enemy[i0][5]+1
+  if (enemy[i0][5]>=100){enemy[i0][2]=enemy[i0][2]-2}
+  if (enemy[i0][2]<=0){enemy[i0][2]=0}
+
+  enemy[i0][0]=enemy[i0][0]-sin(rol)*5-IY*5*sin(rol)+DY*5*sin(rol)
+  enemy[i0][0]=enemy[i0][0]-sin((PI*(enemy[i0][3]))/8)*(enemy[i0][2]/2)*(i0+1)/2
+
+  enemy[i0][1]=enemy[i0][1]+IY*5*cos(rol)-DY*5*cos(rol)
+
+  tmpPTN=Math.floor(rol/Math.PI*8+0.5)
+  tmpPTN=tmpPTN+enemy[i0][3]
+  if (tmpPTN>=16){tmpPTN=tmpPTN-16}
+  if (tmpPTN<0){tmpPTN=tmpPTN+16}
+  tmpDX=200-enemy[i0][0]
+  tmpDY=150-enemy[i0][1]
+  tmpEVR=sqrt(pow(tmpDX,2)+pow(tmpDY,2))
+  tmpEVX=200-tmpEVR*cos(-rol+atan2(tmpDY,tmpDX))
+  tmpEVY=150-tmpEVR*sin(-rol+atan2(tmpDY,tmpDX))
+ }
+ spMOV(5+i0,tmpEVX-enemy[i0][2]*2.5,tmpEVY-enemy[i0][2]*2.5)
+ eneV(5+i0,enemy[i0][2]*5,tmpPTN+i0*20)
+ enemy[i0][4]=enemy[i0][2]
+ if (enemy[i0][2]==19){
+  hitCHK()
+  enemy[i0][2]=18
+  if (enemy[i0][0]>=100){enemy[i0][3]=enemy[i0][3]+1}
+  if (enemy[i0][0]<=250){enemy[i0][3]=enemy[i0][3]-1}
+  if (enemy[i0][3]==16){enemy[i0][3]=0}
+  if (enemy[i0][3]==4){enemy[i0][3]=3}
+  if (enemy[i0][3]==-1){enemy[i0][3]=15}
+  if (enemy[i0][3]==12){enemy[i0][3]=13}
+  if (enemy[i0][0]<=-100){
+   eneA()
+  }
+  if (enemy[i0][0]>=500){
+   eneA()
+  }
+ }
+ if (enemy[i0][2]<=0){
+  eneA()
+ }
+
+  }
+ }
+}
+}else{
+ apache()
+}
+}
+
+//AH64 MODE
+function apache(){
+ with (Math){
+  enemy[0][2]=enemy[0][2]+1
+  if (enemy[0][2]<=0){enemy[0][2]=0}
+  enemy[0][0]=enemy[0][0]-sin(rol)*5-IY*5*sin(rol)+DY*5*sin(rol)
+  enemy[0][0]=enemy[0][0]-enemy[0][2]*2
+  enemy[0][1]=enemy[0][1]+IY*5*cos(rol)-DY*5*cos(rol)
+
+  tmpPTN=Math.floor(rol/Math.PI*8+0.5)
+  if (tmpPTN>=16){tmpPTN=tmpPTN-16}
+  if (tmpPTN<0){tmpPTN=tmpPTN+16}
+  tmpDX=200-enemy[0][0]
+  tmpDY=150-enemy[0][1]
+  tmpEVR=sqrt(pow(tmpDX,2)+pow(tmpDY,2))
+  tmpEVX=200-tmpEVR*cos(-rol+atan2(tmpDY,tmpDX))
+  tmpEVY=150-tmpEVR*sin(-rol+atan2(tmpDY,tmpDX))
+ }
+ spMOV(5,tmpEVX-enemy[0][2]*2.5,tmpEVY-enemy[0][2]*2.5)
+ eneV(5,enemy[0][2]*5,tmpPTN+40)
+ enemy[0][4]=enemy[0][2]
+ 
+ with (Math){
+ if (enemy[1][2]!=0){
+  if (enemy[1][2]<15){
+   enemy[1][0]=enemy[1][0]+eMSLdx
+   enemy[1][0]=enemy[1][0]+eMSLdx
+  }else{
+   enemy[1][0]=enemy[1][0]+(200-enemy[1][0])/8
+   enemy[1][1]=enemy[1][1]+(150-enemy[1][1])/8
+  }
+  tmpDX=200-enemy[1][0]
+  tmpDY=150-enemy[1][1]
+  tmpEVR=sqrt(pow(tmpDX,2)+pow(tmpDY,2))
+  tmpEVX=200-tmpEVR*cos(-rol+atan2(tmpDY,tmpDX))
+  tmpEVY=150-tmpEVR*sin(-rol+atan2(tmpDY,tmpDX))
+  spMOV(6,tmpEVX-enemy[1][2]*2.5,tmpEVY-enemy[1][2]*2.5)
+  eneV(6,enemy[1][2]*5,94)
+  enemy[0][4]=enemy[0][2]
+  enemy[1][2]=enemy[1][2]+1
+  if (enemy[1][2]==19){
+   enemy[1][2]=0
+  }
+ }
+ if (enemy[1][2]>=18){
+  if (abs(200-tmpEVX)<12){
+   if (abs(150-tmpEVY)<12){
+    spMOV(6,-1000,0)
+    document.images["Su27"].src=icons[97].src
+    endFLG=1
+   }
+  }
+ }
+ if (enemy[0][2]==7){
+  enemy[1][0]=enemy[0][0]
+  enemy[1][1]=enemy[0][1]
+  enemy[1][2]=enemy[0][2]
+  enemy[1][4]=0
+  eMSLdx=(200-enemy[1][0])/14
+  eMSLdy=(150-enemy[1][1])/14
+ }
+ }
+ if (enemy[0][2]==19){
+  hitAH()
+  ahFLG=0
+  enemy[0][0]=100+200*Math.random()
+  enemy[0][1]=100+100*Math.random()
+  enemy[0][2]=0
+  enemy[0][3]=14
+  enemy[0][5]=0-Math.floor(20*Math.random())
+  enemy[1][0]=100+200*Math.random()
+  enemy[1][1]=100+100*Math.random()
+  enemy[1][2]=0
+  enemy[1][3]=14
+  enemy[1][5]=0-Math.floor(20*Math.random())
+ }
+}
+
+
+//ENEMY VIEW
+function eneV(spNO,siz,PN){
+ document.images[spNO].src=icons[PN].src
+ zoom(spNO,siz,siz)
+}
+
+//HIT CHECK
+function hitCHK(){
+ if (tmpEVX>=fireNo[0][1]+200-11){
+  if (tmpEVX<=fireNo[0][1]+200+11){
+   if (tmpEVY>=fireNo[0][2]+150-11){
+    if (tmpEVY<=fireNo[0][2]+150+11){
+     eneV(5+i0,enemy[i0][2]*5,96)
+     Hwait[i0]=1
+     SCORE=SCORE+100+50*i0
+     parent.document.forms[0].elements[0].value = SCORE
+    }
+   }
+  }
+ }
+}
+
+//HIT CHECK FOR AH64
+function hitAH(){
+for (iAH=0; iAH<5; iAH++){
+ if (tmpEVX>=fireNo[iAH][1]+200-11){
+  if (tmpEVX<=fireNo[iAH][1]+200+11){
+   if (tmpEVY>=fireNo[iAH][2]+150-11){
+    if (tmpEVY<=fireNo[iAH][2]+150+11){
+     eneV(5,enemy[0][2]*5,97)
+     Hwait[0]=1
+    }
+   }
+  }
+ }
+}
+ if (Hwait[0]==1){
+  SCORE=SCORE+1000
+  parent.document.forms[0].elements[0].value = SCORE
+ }
+}
+
+//Su-27 WRITE
+function Su27w(){
+ if (IY-DY>0){
+  document.images["Su27"].src=icons[91].src
+ }else{
+  if (IY-DY<0){
+   document.images["Su27"].src=icons[92].src
+  }else{
+   document.images["Su27"].src=icons[90].src
+  }
+ }
+}
+
+//HORIZON ROLL CALCULATION
+function rollHR(){
+ rol=rol+IX*0.1-DX*0.1
+ if (rol>=Math.PI){rol=rol-Math.PI*2}
+ if (rol<-Math.PI){rol=rol+Math.PI*2}
+ tmpPitch=tmpPitch+IY*5*Math.cos(rol)-DY*5*Math.cos(rol)
+ if (tmpPitch>=148){tmpPitch=148}
+ if (tmpPitch<=-148){tmpPitch=-148}
+ roll(tmpPitch,rol)
+}
+
+//MY BULLET WRITE
+function bulW(){
+ with (Math){
+  for (ib=0; ib<7; ib++){
+   fireNo[ib][0]=fireNo[1+ib][0]
+   if (sin(rol)>=0){
+    fireNo[ib][1]=fireNo[1+ib][1]-cos(rol)*(abs(sin(rol))*5*(IY-DY+1))
+   }else{
+    fireNo[ib][1]=fireNo[1+ib][1]+cos(rol)*(abs(sin(rol))*5*(IY-DY+1))
+   }
+   fireNo[ib][2]=fireNo[1+ib][2]+abs(sin(rol)*(abs(sin(rol))*5*(IY-DY+1)))
+   fireNo[ib][2]=fireNo[ib][2]-8*(IY-DY)
+  }
+
+
+  fireNo[7][0]=0
+  fireNo[7][1]=-1000
+  fireNo[7][2]=0
+  if (FIRE==1){if (GUN>0){
+   if (fireNo[6][0]==0){
+    fireNo[7][0]=1
+    fireNo[7][1]=0
+    fireNo[7][2]=0
+    GUN=GUN-1
+    parent.document.forms[0].elements[1].value = GUN
+   }
+  }}
+
+  for (ib=0; ib<8; ib++){
+    spMOV(Buloff+ib,fireNo[ib][1]+200-sizeF[ib],fireNo[ib][2]+150-sizeF[ib])
+  }
+ }
+}
+
+//MY MISSILE WRITE
+function mslW(){
+ if (MSLc==9){
+  MSLc=0
+  eneV(5+TGT,enemy[TGT][4],99)
+  eneV(5+TGT,enemy[TGT][2],99)
+  i0=TGT
+  eneA()
+ }
+ if (MSLc==8){
+  MSLc=0
+  spMOV("MSL",-1000,0)
+ }
+ for (ims=0; ims<7; ims++){
+  if (MSLc==7-ims){
+   with (Math){
+    MSLx[0]=MSLx[0]-sin(rol)*5-IY*5*sin(rol)+DY*5*sin(rol)
+    MSLy[0]=MSLy[0]+IY*5*cos(rol)-DY*5*cos(rol)
+
+    tmx=enemy[TGT][0]-MSLx[0]
+    tmy=enemy[TGT][1]-MSLy[0]
+    MSLx[0]=MSLx[0]+tmx/3
+    MSLy[0]=MSLy[0]+tmy/3
+    MSLc=MSLc+1
+    tmpRO()
+    spMOV("MSL",tmpEVX,tmpEVY)
+    zoom("MSL",floor(pow(1.245,12-MSLc)),floor(pow(1.245,12-MSLc)))
+    if (abs(tmx)<14){if (abs(tmy)<14){mslHIT()}}
+   }
+  }
+ }
+ if (MSLc==0){if (MSL==1){if (MSLr>=1){
+  MSLx[0]=200;MSLy[0]=160;MSLc=1;MSLr=MSLr-1
+  parent.document.forms[0].elements[2].value = MSLr
+  TGT=0
+  if (ahFLG==0){
+   if (enemy[1][2]>enemy[0][2]){TGT=1}
+   if (enemy[1][2]==enemy[0][2]){
+    with (Math){
+     tmpDX=200-enemy[0][0]
+     tmpDY=150-enemy[0][1]
+     tmpEVR1=sqrt(pow(tmpDX,2)+pow(tmpDY,2))
+     tmpDX=200-enemy[1][0]
+     tmpDY=150-enemy[1][1]
+     tmpEVR2=sqrt(pow(tmpDX,2)+pow(tmpDY,2))
+     if (tmpEVR2<tmpEVR1){TGT=1}
+    }
+   }
+  }
+  spMOV("MSL",192,152)
+  with (Math){
+   zoom("MSL",floor(pow(1.245,12-MSLc)),floor(pow(1.245,12-MSLc)))
+  }
+ }}}
+}
+
+//MISSILE tmp rotation
+function tmpRO(){
+ with (Math){
+  tmpDX=200-MSLx[0]
+  tmpDY=150-MSLy[0]
+  tmpEVR=sqrt(pow(tmpDX,2)+pow(tmpDY,2))
+  tmpEVX=200-tmpEVR*cos(-rol+atan2(tmpDY,tmpDX))
+  tmpEVY=150-tmpEVR*sin(-rol+atan2(tmpDY,tmpDX))
+ }
+}
+
+//MISSILE HIT
+function mslHIT(){
+ MSLc=9;MSL=0
+ spMOV("MSL",-1000,0)
+ eneV(5+TGT,enemy[TGT][2]*5,97)
+ SCORE=SCORE+100+50*TGT+ahFLG*1000
+ parent.document.forms[0].elements[0].value = SCORE
+}
+
+//END GAME
+function edG(){
+  gameEND.style.posTop = 100
+  document.forms[2].elements[0].value = SCORE
+}
+
+//-------------------------------------------------------
+//------------- SUB FUNCTIONS (FOR IE) ------------------
+//-------------------------------------------------------
+
+//IMAGE SETUP
+function spINI(spX,spY,spIMG){
+ with (document) {
+  write("<IMG SRC='"+spIMG+"' STYLE='position:absolute'>")
+  images[spCOUNT].style.posLeft = spX
+  images[spCOUNT].style.posTop =  spY
+  spCOUNT=spCOUNT+1
+ }
+}
+
+//ON LOAD
+function onLD(){
+ document.onkeypress = keyDown
+ document.onkeyup = keyUp
+}
+
+//RESTART
+function restart(){
+ RES.style.posTop = -1000
+ timerID = setTimeout("intervalT()",50)
+}
+
+//IMAGE ZOOM
+function zoom(spNO,zoomX,zoomY){
+   document.images[spNO].style.height = zoomY
+   document.images[spNO].style.width =  zoomX
+}
+
+//REFRESH GAME
+function refG(){
+ IX=0
+ IY=0
+ DX=0
+ DY=0
+ FIRE=0
+ MSL=0
+ MSLr=10
+ MSLc=0
+ SCORE=0
+ Mtimer=0
+ AHtimer=0
+ ahFLG=0
+ GUN=500
+ endFLG=0
+ enemy[0][0]=280
+ enemy[0][1]=100
+ enemy[0][2]=0
+ enemy[0][3]=0
+ enemy[0][4]=0
+ enemy[0][5]=0
+ enemy[1][0]=150
+ enemy[1][1]=120
+ enemy[1][2]=0
+ enemy[1][3]=0
+ enemy[1][4]=0
+ enemy[1][5]=0
+
+  spMOV(5,0,-1000)
+  spMOV(6,0,-1000)
+
+ for (i=0; i<8; i++){
+  Hwait[i]=0
+ }
+ for (i=0; i<8; i++){
+  fireNo[i][0]=0
+  fireNo[i][1]=-1000
+  fireNo[i][2]=0
+ }
+  gameEND.style.posTop = -1000
+  parent.document.forms[0].elements[0].value = 0
+  parent.document.forms[0].elements[1].value = 500
+  parent.document.forms[0].elements[2].value = 10
+  parent.document.forms[0].elements[3].value = 2000
+  startG()
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+
+
+<BODY BGCOLOR="#00AFFF" TEXT="#FFFFFF" ONLOAD="onLD()">
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+ spINI(1000,0,"lr0.gif")
+ spINI(1000,0,"r45c.gif")
+ spINI(1000,0,"r135c.gif")
+ spINI(1000,0,"l45c.gif")
+ spINI(1000,0,"l135c.gif")
+
+ zoom(0,400,300)
+ spMOV(0,0,149)
+
+ spINI(1,1,"null.gif")
+ spMOV(5,1000,150)
+
+ spINI(1,1,"null.gif")
+ spMOV(6,1000,150)
+
+//-->
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+//MY BULLET LAYER
+ Buloff=spCOUNT
+ for (ia=0; ia<8; ia++){
+  with(Math){
+   ix=floor(pow(1.245,ia+3))
+   iix=floor(ix/2)
+   sizeF[ia]=iix
+   iaT=ia.toString()
+  }
+  spINI(-1000,0,"fire1c.gif")
+  zoom(spCOUNT-1,ix,ix)
+ }
+
+//-->
+</SCRIPT>
+<IMG SRC="fire2c.gif" ID="MSL" STYLE="position:absolute; top: -1000; left: 0">
+
+<IMG SRC="su27c.gif" ID="Su27" STYLE="position:absolute; top: 100; left: 150">
+
+<DIV ID="STA" STYLE="position:absolute; top: 150; left: 170">
+ <FORM>
+ <INPUT TYPE="button" VALUE="START" ONCLICK="startG()">
+ </FORM>
+</DIV>
+
+<DIV ID="RES" STYLE="position:absolute; top: -1000; left: 170">
+ <FORM>
+ <INPUT TYPE="button" VALUE="PAUSE" ONCLICK="restart()">
+ </FORM>
+</DIV>
+
+<DIV ID="gameEND" STYLE="position:absolute; top: -2000; left: 110">
+ <FONT COLOR="#FF0000" STYLE="font-size:30px">GAME OVER</FONT><P>
+ <FORM><FONT COLOR="#FFFF00" STYLE="font-size:16px">
+ YOUR SCORE:<INPUT TYPE="text" VALUE="" SIZE="10">pts
+ <P><BR><P>
+ <IMG WIDTH=45 HEIGHT=1 SRC="null.gif">
+ <INPUT TYPE="button" VALUE="Try Again" ONCLICK="refG()">
+ </FONT></FORM>
+</DIV>
+
+
+</BODY>
+</HTML>
