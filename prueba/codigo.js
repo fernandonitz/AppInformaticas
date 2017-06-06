@@ -8,6 +8,7 @@ var b = screen.width;
 // 		this.colectivos.push(colectivo);
 //  	}
 // }
+
 function Parada(posx,posy){
    	this.x = posx;
    	this.y = posy;
@@ -60,11 +61,11 @@ function Colectivo(idCole){
 // tiempoParadas105 = [1,4,3,2,5,6,3,2,1,1]
 // tiempoParadas146 = 
 var tiempoParadas146 = [4,5,6,3,2,1,1,1,3,2];
-var cole_1_146 = new Colectivo("cole2");
+var cole_1_146 = new Colectivo("cole1_146");
 cole_1_146.addTEC(tiempoParadas146)
 
 var tiempoParadas152 = [2,3,2,3,2,3,2,3,2,3];
-var cole_1_152 = new Colectivo("cole1");
+var cole_1_152 = new Colectivo("cole1_152");
 cole_1_152.addTEC(tiempoParadas152);
 
 
