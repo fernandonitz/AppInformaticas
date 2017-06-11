@@ -1,9 +1,10 @@
 var a = screen.height;
 var b = screen.width;
 
-function LineaCole(tCole){
+function LineaCole(tCole,capacidad){
 	this.tEntreCole = tCole
 	this.tHastaProxCole = 0
+	this.capacidad = capacidad
    	this.colectivos = new Array()
    	// se necesitan agregar
    	this.paradas = new Array()
@@ -34,7 +35,7 @@ function LineaCole(tCole){
    			var j = this.hayColesInactivos()
    			if (j >= 0) {
    				this.usoIds[j] = true
-   				var colectivo = new Colectivo(this.idsColes[j])
+   				var colectivo = new Colectivo(this.idsColes[j],this.capacidad)
    				for (var i = 0; i <= this.paradas.length; i++) {
    					colectivo.addParada(this.paradas[i])
    				}
@@ -90,13 +91,31 @@ function Parada(posx,posy){
 		return this.y;
     }
 }
-function Colectivo(idCole){
-    	this.tEntreParadas = [];
-    	this.tParadas = new Array();
-    	this.paradas = new Array();
-    	this.idCole = idCole;
-    	this.tiempoOperativo = 0
+function Colectivo(idCole,capacidad){
+	this.tEntreParadas = [];
+	this.tParadas = new Array();
+	this.paradas = new Array();
+	this.idCole = idCole;
+	this.tiempoOperativo = 0
 
+	this.capacidad = capacidad
+	this.cantPersonas = 0
+
+	this.sumarPersona = function(cantPersonas){
+		this.cantPersonas = this.cantPersonas + cantPersonas
+	}
+	this.restarPersona = function(cantPersonas){
+		this.cantPersonas = this.cantPersonas - cantPersonas
+	}
+	this.getCantPersonas = function(cantPersonas){
+		return this.cantPersonas
+	}
+	this.sobrecargado = function(){
+		if (this.cantPersonas > this.capacidad){
+			return true
+		}
+		return false
+	}
     this.getTiempoOperativo = function(){
     	return this.tiempoOperativo
     }
@@ -133,63 +152,6 @@ function Colectivo(idCole){
  		}
  	}
 }
-
-//var cole_1_146 = new Colectivo("cole1_146");
-//cole_1_146.addTEC(tiempoParadas146)
-
-//var cole_1_152 = new Colectivo("cole1_152");
-//cole_1_152.addTEC(tiempoParadas152);
-
-
-
-// var Parada_1_152 = new Parada(60,40);
-// var Parada_2_152 = new Parada(90,25);
-// var Parada_3_152 = new Parada(115,70);
-// var Parada_4_152 = new Parada(130,100);
-// var Parada_5_152 = new Parada(170,100);
-// var Parada_6_152 = new Parada(190,110);
-// var Parada_7_152 = new Parada(210,140);
-// var Parada_8_152 = new Parada(230,100);
-// var Parada_9_152 = new Parada(260,60);
-// var Parada_10_152 = new Parada(290,60);
-// var Parada_11_152 = new Parada(290,120);
-// cole_1_152.addParada(Parada_1_152)
-// cole_1_152.addParada(Parada_2_152)
-// cole_1_152.addParada(Parada_3_152)
-// cole_1_152.addParada(Parada_4_152)
-// cole_1_152.addParada(Parada_5_152)
-// cole_1_152.addParada(Parada_6_152)
-// cole_1_152.addParada(Parada_7_152)
-// cole_1_152.addParada(Parada_8_152)
-// cole_1_152.addParada(Parada_9_152)
-// cole_1_152.addParada(Parada_10_152)
-
-// var Parada_1_146 = new Parada(60,150);
-// var Parada_2_146 = new Parada(90,170);
-// var Parada_3_146 = new Parada(115,190);
-// var Parada_4_146 = new Parada(130,200);
-// var Parada_5_146 = new Parada(170,200);
-// var Parada_6_146 = new Parada(190,210);
-// var Parada_7_146 = new Parada(210,180);
-// var Parada_8_146 = new Parada(230,200);
-// var Parada_9_146 = new Parada(260,210);
-// var Parada_10_146 = new Parada(290,200);
-// var Parada_11_146 = new Parada(290,170);
-
-
-// cole_1_146.addParada(Parada_1_146)
-// cole_1_146.addParada(Parada_2_146)
-// cole_1_146.addParada(Parada_3_146)
-// cole_1_146.addParada(Parada_4_146)
-// cole_1_146.addParada(Parada_5_146)
-// cole_1_146.addParada(Parada_6_146)
-// cole_1_146.addParada(Parada_7_146)
-// cole_1_146.addParada(Parada_8_146)
-// cole_1_146.addParada(Parada_9_146)
-// cole_1_146.addParada(Parada_10_146)
-
-
-
 paradas_146 = [new Parada(60,150),new Parada(90,170),new Parada(115,190),
 				new Parada(130,200),new Parada(170,200),new Parada(190,210),
 				new Parada(210,180),new Parada(230,200),new Parada(260,210),
@@ -208,9 +170,8 @@ ids_152 = ["cole1_152","cole2_152","cole3_152"]
 var tiempoParadas152 = [2,3,2,3,2,3,2,3,2,3];
 var tiempoParadas146 = [4,5,6,3,2,1,1,1,3,2];
 
-
-var Linea152 = new LineaCole(10);
-var Linea146 = new LineaCole(12);
+var Linea152 = new LineaCole(10,30);
+var Linea146 = new LineaCole(12,30);
 
 Linea146.addParadas(paradas_146)
 Linea152.addParadas(paradas_152)
@@ -228,28 +189,5 @@ function main(){
 	Linea146.printColectivos()
 	Linea152.addColectivo()
 	Linea152.printColectivos()
-
-
-
-	// result_152 = cole_1_152.printCole(tiempo_152)
-	// if (!result_152){
-	// 	tiempo_152 = -1
-	// }
-	// tiempo_152 = tiempo_152 + 1
-
-	// result_146 = cole_1_146.printCole(tiempo_146)
-	// if (!result_146){
-	// 	tiempo_146 = -1
-	// }
-	// tiempo_146 = tiempo_146 + 1
-
 	setTimeout(main,1000)
 }
-
-
-
-
-
-
-
-
