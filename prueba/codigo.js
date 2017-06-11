@@ -202,6 +202,7 @@ function main(){
 	setTimeout(main,1000)
 }
 var cantidad = 0
+
 function sumar(linea,colectivo,cantPersonas){
 	var aux_linea = lineas[linea]
 	var aux_colectivos = aux_linea.getColectivos()
@@ -210,6 +211,17 @@ function sumar(linea,colectivo,cantPersonas){
 		aux_colectivo.sumarPersona(cantPersonas)
 		cantidad = aux_colectivo.getCantPersonas()
 		var aux_escrib = document.getElementById("id_mostrar");  
-    	aux_escrib.textContent = "hola";
+    	aux_escrib.textContent = aux_colectivo.getCantPersonas().toString();
+	}
+}
+function restar(linea,colectivo,cantPersonas){
+	var aux_linea = lineas[linea]
+	var aux_colectivos = aux_linea.getColectivos()
+	var aux_colectivo = aux_colectivos[colectivo]
+	if (aux_colectivo != null){
+		aux_colectivo.restarPersona(cantPersonas)
+		cantidad = aux_colectivo.getCantPersonas()
+		var aux_escrib = document.getElementById("id_mostrar");  
+    	aux_escrib.textContent = aux_colectivo.getCantPersonas().toString();
 	}
 }
