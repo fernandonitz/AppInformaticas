@@ -14,6 +14,13 @@ function LineaCole(tCole,capacidad){
    	this.idsColes = new Array()
    	this.usoIds = new Array()
 
+   	this.getColectivos = function(){
+   		return this.colectivos
+   	}
+   	this.refresh = function(){
+   		this.addColectivo();
+   		this.printColectivos();
+   	}
    	this.addTiempoEntreParadas = function(tEntreParadas){
    		for (var i = 0; i <= tEntreParadas.length; i++) {
  			this.tEntreParadas.push(tEntreParadas[i]) 
@@ -182,12 +189,27 @@ Linea152.addIdsColectivos(ids_152)
 Linea146.addTiempoEntreParadas(tiempoParadas146)
 Linea152.addTiempoEntreParadas(tiempoParadas152)
 
+var lineas = [Linea146,Linea152]
+
 var tiempo = 0
 main()
 function main(){
-	Linea146.addColectivo()
-	Linea146.printColectivos()
-	Linea152.addColectivo()
-	Linea152.printColectivos()
+	for (var i = 0; i <= lineas.length; i++) {
+		if (lineas[i] != null){
+			lineas[i].refresh()
+		}
+	}
 	setTimeout(main,1000)
+}
+var cantidad = 0
+function sumar(linea,colectivo,cantPersonas){
+	var aux_linea = lineas[linea]
+	var aux_colectivos = aux_linea.getColectivos()
+	var aux_colectivo = aux_colectivos[colectivo]
+	if (aux_colectivo != null){
+		aux_colectivo.sumarPersona(cantPersonas)
+		cantidad = aux_colectivo.getCantPersonas()
+		var aux_escrib = document.getElementById("id_mostrar");  
+    	aux_escrib.textContent = "hola";
+	}
 }
