@@ -150,6 +150,7 @@ function Colectivo(idCole,capacidad){
  		 	if (this.tiempoOperativo < this.tParadas[i+1] && this.tiempoOperativo >= this.tParadas[i]){
  		 		document.getElementById(this.idCole).style.left = this.paradas[i].getX().toString() + "px";
  		 		document.getElementById(this.idCole).style.top = this.paradas[i].getY().toString() + "px";
+ 				document.getElementById(this.idCole).style.visibility = "visible"
  				entro = true
  				return true
  			}
@@ -159,15 +160,15 @@ function Colectivo(idCole,capacidad){
  		}
  	}
 }
-paradas_146 = [new Parada(60,150),new Parada(90,170),new Parada(115,190),
-				new Parada(130,200),new Parada(170,200),new Parada(190,210),
-				new Parada(210,180),new Parada(230,200),new Parada(260,210),
-				new Parada(290,200),new Parada(290,170)];
+paradas_146 = [new Parada(60,150),new Parada(180,170),new Parada(265,190),
+				new Parada(350,200),new Parada(436,200),new Parada(480,210),
+				new Parada(520,180),new Parada(540,200),new Parada(650,210),
+				new Parada(780,200),new Parada(780,170)];
 
-paradas_152 = [new Parada(60,40),new Parada(90,25),new Parada(115,70),
-				new Parada(130,100),new Parada(170,100),new Parada(190,110),
-				new Parada(210,140),new Parada(230,100),new Parada(260,60),
-				new Parada(290,60),new Parada(290,120)];
+paradas_152 = [new Parada(110,40),new Parada(180,25),new Parada(210,70),
+				new Parada(300,100),new Parada(330,100),new Parada(420,110),
+				new Parada(531,140),new Parada(570,100),new Parada(650,60),
+				new Parada(710,60),new Parada(750,120)];
 tiempo_146 = 0
 tiempo_152 = 0
 
@@ -203,25 +204,25 @@ function main(){
 }
 var cantidad = 0
 
-function sumar(linea,colectivo,cantPersonas){
+function sumar(linea,colectivo,cantPersonas,id_buttom){
 	var aux_linea = lineas[linea]
 	var aux_colectivos = aux_linea.getColectivos()
 	var aux_colectivo = aux_colectivos[colectivo]
 	if (aux_colectivo != null){
 		aux_colectivo.sumarPersona(cantPersonas)
 		cantidad = aux_colectivo.getCantPersonas()
-		var aux_escrib = document.getElementById("id_mostrar");  
+		var aux_escrib = document.getElementById(id_buttom.toString());  
     	aux_escrib.textContent = aux_colectivo.getCantPersonas().toString();
 	}
 }
-function restar(linea,colectivo,cantPersonas){
+function restar(linea,colectivo,cantPersonas,id_buttom){
 	var aux_linea = lineas[linea]
 	var aux_colectivos = aux_linea.getColectivos()
 	var aux_colectivo = aux_colectivos[colectivo]
 	if (aux_colectivo != null){
 		aux_colectivo.restarPersona(cantPersonas)
 		cantidad = aux_colectivo.getCantPersonas()
-		var aux_escrib = document.getElementById("id_mostrar");  
+		var aux_escrib = document.getElementById(id_buttom.toString());  
     	aux_escrib.textContent = aux_colectivo.getCantPersonas().toString();
 	}
 }

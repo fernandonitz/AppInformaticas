@@ -2,21 +2,69 @@
 	<!DOCTYPE html>
 	<html>
 		<head >
-			<button type="button" onClick="sumar(0,1,2);" id = "buttom_1" STYLE ="	position:absolute;top:350px;left:20px;visibility:visible;z-index:2">
+			<button type="button" onClick="sumar(0,0,1,'id_mostrar_1');" id = "buttom_1" STYLE ="	position:absolute;top:350px;left:20px;visibility:visible;z-index:2">
 				+ 
 			</button>
-			<button type="button" onClick="restar(0,1,2);" id = "buttom_2" STYLE ="	position:absolute;top:380px;left:20px;visibility:visible;z-index:2">
+			<button type="button" onClick="restar(0,0,1,'id_mostrar_1');" id = "buttom_2" STYLE ="	position:absolute;top:380px;left:20px;visibility:visible;z-index:2">
 				 -  
 			</button>
-			<div id="id_mostrar" STYLE ="	position:absolute;top:365px;left:60px;visibility:visible;z-index:2" >0</div>
+			<div id="id_mostrar_1" STYLE ="	position:absolute;top:365px;left:60px;visibility:visible;z-index:2" >0</div>
+
+
+			<button type="button" onClick="sumar(0,1,1,'id_mostrar_2');" id = "buttom_3" STYLE ="	position:absolute;top:350px;left:80px;visibility:visible;z-index:2">
+				+ 
+			</button>
+			<button type="button" onClick="restar(0,1,1,'id_mostrar_2');" id = "buttom_4" STYLE ="	position:absolute;top:380px;left:80px;visibility:visible;z-index:2">
+				 -  
+			</button>
+			<div id="id_mostrar_2" STYLE ="	position:absolute;top:365px;left:120px;visibility:visible;z-index:2" >0</div>
+
+			<button type="button" onClick="sumar(0,2,1,'id_mostrar_3');" id = "buttom_5" STYLE ="	position:absolute;top:350px;left:140px;visibility:visible;z-index:2">
+				+ 
+			</button>
+			<button type="button" onClick="restar(0,2,1,'id_mostrar_3');" id = "buttom_6" STYLE ="	position:absolute;top:380px;left:140px;visibility:visible;z-index:2">
+				 -  
+			</button>
+			<div id="id_mostrar_3" STYLE ="	position:absolute;top:365px;left:180px;visibility:visible;z-index:2" >0</div>
+
+
+
+
+
+			<button type="button" onClick="sumar(1,0,1,'id_mostrar_4');" id = "buttom_1" STYLE ="	position:absolute;top:350px;left:200px;visibility:visible;z-index:2">
+				+ 
+			</button>
+			<button type="button" onClick="restar(1,0,1,'id_mostrar_4');" id = "buttom_2" STYLE ="	position:absolute;top:380px;left:200px;visibility:visible;z-index:2">
+				 -  
+			</button>
+			<div id="id_mostrar_4" STYLE ="	position:absolute;top:365px;left:240px;visibility:visible;z-index:2" >0</div>
+
+
+			<button type="button" onClick="sumar(1,1,1,'id_mostrar_5');" id = "buttom_3" STYLE ="	position:absolute;top:350px;left:260px;visibility:visible;z-index:2">
+				+ 
+			</button>
+			<button type="button" onClick="restar(1,1,1,'id_mostrar_5');" id = "buttom_4" STYLE ="	position:absolute;top:380px;left:260px;visibility:visible;z-index:2">
+				 -  
+			</button>
+			<div id="id_mostrar_5" STYLE ="	position:absolute;top:365px;left:300px;visibility:visible;z-index:2" >0</div>
+
+			<button type="button" onClick="sumar(1,2,1,'id_mostrar_6');" id = "buttom_5" STYLE ="	position:absolute;top:350px;left:320px;visibility:visible;z-index:2">
+				+ 
+			</button>
+			<button type="button" onClick="restar(1,2,1,'id_mostrar_6');" id = "buttom_6" STYLE ="	position:absolute;top:380px;left:320px;visibility:visible;z-index:2">
+				 -  
+			</button>
+			<div id="id_mostrar_6" STYLE ="	position:absolute;top:365px;left:360px;visibility:visible;z-index:2" >0</div>
+
+
 
 		</head>
 		<body>
 		 	<DIV STYLE =" 	position:absolute;
 							top:0;
 							left:0;
-							width:100%;
-							height:100%;
+							width:80%;
+							height:80%;
 							visibility:visible;
 							z-index:0" >
 			<img src="map_piola.png" z-index = 0 top = 0 left = 0 width = 100% height = 100% position = absolute>
@@ -24,42 +72,42 @@
 	 		<DIV id = "cole1_152" STYLE ="	position:absolute;
 							top:50px;
 							left:50px;
-							visibility:visible;
+							visibility:hidden;
 							z-index:2" >
 				<img src="red_inver.png" z-index = 1 width="20" height="20">
 			</DIV>
 			<DIV id = "cole2_152" STYLE ="	position:absolute;
 							top:0px;
 							left:20px;
-							visibility:visible;
+							visibility:hidden;
 							z-index:2" >
 				<img src="red_inver.png" z-index = 1 width="20" height="20">
 			</DIV>
 			<DIV id = "cole3_152" STYLE ="	position:absolute;
 							top:0px;
 							left:60px;
-							visibility:visible;
+							visibility:hidden;
 							z-index:2" >
 				<img src="red_inver.png" z-index = 1 width="20" height="20">
 			</DIV>
 			<DIV id = "cole1_146" STYLE ="	position:absolute;
 							top:150px;
 							left:150px;
-							visibility:visible;
+							visibility:hidden;
 							z-index:2" >
 				<img src="yellow_inver.png" z-index = 1 width="20" height="20">
 			</DIV>
 			<DIV id = "cole2_146" STYLE ="	position:absolute;
 							top:0px;
 							left:100px;
-							visibility:visible;
+							visibility:hidden;
 							z-index:2" >
 				<img src="yellow_inver.png" z-index = 1 width="20" height="20">
 			</DIV>
 			<DIV id = "cole3_146" STYLE ="	position:absolute;
 							top:0px;
 							left:140px;
-							visibility:visible;
+							visibility:hidden;
 							z-index:2" >
 				<img src="yellow_inver.png" z-index = 1 width="20" height="20">
 			</DIV>
