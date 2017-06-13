@@ -12,6 +12,8 @@ function LineaCole(tCole,capacidad){
    	this.tEntreParadas = new Array()
    	// se necesitan agregar
    	this.idsColes = new Array()
+   	//se necesitan agregar
+   	this.idsSobreColes = new Array()
    	this.usoIds = new Array()
 
    	this.getColectivos = function(){
@@ -37,12 +39,17 @@ function LineaCole(tCole,capacidad){
    			this.usoIds.push(false)
    		}
    	}
+   	this.addIdsSobreColectivos = function(idsColes){
+   		for (var i = 0; i <= idsColes.length; i++) {
+   			this.idsSobreColes.push(idsColes[i])
+   		}
+   	}
    	this.addColectivo = function() {
    		if (this.tHastaProxCole <= 0) {
    			var j = this.hayColesInactivos()
    			if (j >= 0) {
    				this.usoIds[j] = true
-   				var colectivo = new Colectivo(this.idsColes[j],this.capacidad)
+   				var colectivo = new Colectivo(this.idsColes[j],this.idsSobreColes[j],this.capacidad)
    				for (var i = 0; i <= this.paradas.length; i++) {
    					colectivo.addParada(this.paradas[i])
    				}
@@ -98,11 +105,12 @@ function Parada(posx,posy){
 		return this.y;
     }
 }
-function Colectivo(idCole,capacidad){
+function Colectivo(idCole,idSobreCole,capacidad){
 	this.tEntreParadas = [];
 	this.tParadas = new Array();
 	this.paradas = new Array();
 	this.idCole = idCole;
+	this.idSobreCole = idSobreCole;
 	this.tiempoOperativo = 0
 
 	this.capacidad = capacidad
@@ -112,7 +120,9 @@ function Colectivo(idCole,capacidad){
 		this.cantPersonas = this.cantPersonas + cantPersonas
 	}
 	this.restarPersona = function(cantPersonas){
-		this.cantPersonas = this.cantPersonas - cantPersonas
+		if (this.cantPersonas - cantPersonas >= 0){
+			this.cantPersonas = this.cantPersonas - cantPersonas
+		}
 	}
 	this.getCantPersonas = function(cantPersonas){
 		return this.cantPersonas
@@ -148,9 +158,22 @@ function Colectivo(idCole,capacidad){
  		var entro = false
  		for (var i = 0; i < this.tParadas.length; i++) {
  		 	if (this.tiempoOperativo < this.tParadas[i+1] && this.tiempoOperativo >= this.tParadas[i]){
- 		 		document.getElementById(this.idCole).style.left = this.paradas[i].getX().toString() + "px";
- 		 		document.getElementById(this.idCole).style.top = this.paradas[i].getY().toString() + "px";
- 				document.getElementById(this.idCole).style.visibility = "visible"
+ 				if (this.capacidad<this.cantPersonas){
+ 					document.getElementById(this.idSobreCole).style.left = this.paradas[i].getX().toString() + "px";
+ 		 			document.getElementById(this.idSobreCole).style.top = this.paradas[i].getY().toString() + "px";
+ 					if (this.idSobreCole != null){
+	 					document.getElementById(this.idSobreCole).style.visibility = "visible"		
+ 					}
+ 					document.getElementById(this.idCole).style.visibility = "hidden"	
+ 				}
+ 				else{
+ 					document.getElementById(this.idCole).style.left = this.paradas[i].getX().toString() + "px";
+ 		 			document.getElementById(this.idCole).style.top = this.paradas[i].getY().toString() + "px";
+ 		 			if (this.idSobreCole != null){
+	 					document.getElementById(this.idSobreCole).style.visibility = "hidden"		
+ 		 			}
+ 					document.getElementById(this.idCole).style.visibility = "visible"	
+ 				}
  				entro = true
  				return true
  			}
@@ -173,19 +196,23 @@ tiempo_146 = 0
 tiempo_152 = 0
 
 ids_146 = ["cole1_146","cole2_146","cole3_146"]
+ids_sobre_146 = ["coleSobre_1","coleSobre_2","coleSobre_3"]
 ids_152 = ["cole1_152","cole2_152","cole3_152"]
+ids_sobre_152 = ["coleSobre_4","coleSobre_5","coleSobre_6"]
 
 var tiempoParadas152 = [2,3,2,3,2,3,2,3,2,3];
 var tiempoParadas146 = [4,5,6,3,2,1,1,1,3,2];
 
-var Linea152 = new LineaCole(10,30);
-var Linea146 = new LineaCole(12,30);
+var Linea152 = new LineaCole(10,7);
+var Linea146 = new LineaCole(12,7);
 
 Linea146.addParadas(paradas_146)
 Linea152.addParadas(paradas_152)
 
 Linea146.addIdsColectivos(ids_146)
 Linea152.addIdsColectivos(ids_152)
+Linea146.addIdsSobreColectivos(ids_sobre_146)
+Linea152.addIdsSobreColectivos(ids_sobre_152)
 
 Linea146.addTiempoEntreParadas(tiempoParadas146)
 Linea152.addTiempoEntreParadas(tiempoParadas152)
