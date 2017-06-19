@@ -1,10 +1,11 @@
 var a = screen.height;
 var b = screen.width;
 
-function LineaCole(tCole,capacidad){
+function LineaCole(tCole,capacidad,cantEsperada){
 	this.tEntreCole = tCole
 	this.tHastaProxCole = 0
 	this.capacidad = capacidad
+	this.cantEsperada = cantEsperada
    	this.colectivos = new Array()
    	// se necesitan agregar
    	this.paradas = new Array()
@@ -49,7 +50,7 @@ function LineaCole(tCole,capacidad){
    			var j = this.hayColesInactivos()
    			if (j >= 0) {
    				this.usoIds[j] = true
-   				var colectivo = new Colectivo(this.idsColes[j],this.idsSobreColes[j],this.capacidad)
+   				var colectivo = new Colectivo(this.idsColes[j],this.idsSobreColes[j],this.capacidad,this.cantEsperada)
    				for (var i = 0; i <= this.paradas.length; i++) {
    					colectivo.addParada(this.paradas[i])
    				}
@@ -105,17 +106,36 @@ function Parada(posx,posy){
 		return this.y;
     }
 }
-function Colectivo(idCole,idSobreCole,capacidad){
+function Colectivo(idCole,idSobreCole,capacidad,cantEsperada){
 	this.tEntreParadas = [];
 	this.tParadas = new Array();
 	this.paradas = new Array();
 	this.idCole = idCole;
 	this.idSobreCole = idSobreCole;
 	this.tiempoOperativo = 0
-
+	this.cantEsperada = cantEsperada
+	this.pasajerosTransportados = new Array();
 	this.capacidad = capacidad
 	this.cantPersonas = 0
 
+	this.promedioGente = function(){
+		var prom = 0
+		var tiempo = 0
+		var cantPersonas = 0
+		for (var i = 0; i < this.tParadas.length - 1; i++) {
+			tiempo = this.tParadas[i]
+		}
+		//console.log(this.tParadas)
+		//console.log(tiempo)
+		for (var j = 0; j < this.pasajerosTransportados.length; j++) {
+			cantPersonas = cantPersonas + this.pasajerosTransportados[j]
+		}
+		//console.log(this.pasajerosTransportados)
+		//console.log(cantPersonas)
+		prom = cantPersonas/tiempo
+		//console.log(prom)
+		return prom
+	}
 	this.sumarPersona = function(cantPersonas){
 		this.cantPersonas = this.cantPersonas + cantPersonas
 	}
@@ -159,6 +179,7 @@ function Colectivo(idCole,idSobreCole,capacidad){
  		for (var i = 0; i < this.tParadas.length; i++) {
  		 	if (this.tiempoOperativo < this.tParadas[i+1] && this.tiempoOperativo >= this.tParadas[i]){
  				if (this.capacidad<this.cantPersonas){
+ 					this.pasajerosTransportados.push(this.cantPersonas)
  					document.getElementById(this.idSobreCole).style.left = this.paradas[i].getX().toString() + "px";
  		 			document.getElementById(this.idSobreCole).style.top = this.paradas[i].getY().toString() + "px";
  					if (this.idSobreCole != null){
@@ -167,6 +188,7 @@ function Colectivo(idCole,idSobreCole,capacidad){
  					document.getElementById(this.idCole).style.visibility = "hidden"	
  				}
  				else{
+ 					this.pasajerosTransportados.push(this.cantPersonas)
  					document.getElementById(this.idCole).style.left = this.paradas[i].getX().toString() + "px";
  		 			document.getElementById(this.idCole).style.top = this.paradas[i].getY().toString() + "px";
  		 			if (this.idSobreCole != null){
@@ -178,7 +200,20 @@ function Colectivo(idCole,idSobreCole,capacidad){
  				return true
  			}
  		}
- 		if (!entro){	
+ 		if (!entro){
+ 			prom = this.promedioGente()
+ 			//console.log(prom)
+ 			//console.log(this.cantEsperada)
+ 			//console.log(this.pasajerosTransportados)
+ 			if(this.cantEsperada > prom){
+ 				console.log("El colectivo transporto menos cantidad de lo esperado")		
+ 			}
+ 			if(this.cantEsperada < prom){
+ 				console.log("El colectivo transporto más cantidad de lo esperado")		
+ 			}
+ 			if (this.cantEsperada == prom) {
+ 				console.log("El colectivo transporto lo esperado")			
+ 			}
  			return false
  		}
  	}
@@ -200,11 +235,11 @@ ids_sobre_146 = ["coleSobre_1","coleSobre_2","coleSobre_3"]
 ids_152 = ["cole1_152","cole2_152","cole3_152"]
 ids_sobre_152 = ["coleSobre_4","coleSobre_5","coleSobre_6"]
 
-var tiempoParadas152 = [2,3,2,3,2,3,2,3,2,3];
-var tiempoParadas146 = [4,5,6,3,2,1,1,1,3,2];
+var tiempoParadas152 = [2,3,2,3,2,3,2,3,2,3]; //25
+var tiempoParadas146 = [4,5,6,3,2,1,1,1,3,2]; //28 
 
-var Linea152 = new LineaCole(10,7);
-var Linea146 = new LineaCole(12,7);
+var Linea152 = new LineaCole(10,7,3);
+var Linea146 = new LineaCole(12,7,3);
 
 Linea146.addParadas(paradas_146)
 Linea152.addParadas(paradas_152)
